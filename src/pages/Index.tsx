@@ -5,7 +5,9 @@ import { ReviewStars } from "@/components/ReviewStars";
 import { RelatedProducts } from "@/components/RelatedProducts";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Edit2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
 
 const MOCK_IMAGES = [
   "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
@@ -37,12 +39,25 @@ const MOCK_RELATED = [
 const Index = () => {
   const [selectedSize, setSelectedSize] = useState(MOCK_SIZES[0].id);
   const [selectedColor, setSelectedColor] = useState(MOCK_COLORS[0].id);
+  const [isEditing, setIsEditing] = useState(false);
+  const [productName, setProductName] = useState("Premium Product Name");
+  const [productPrice, setProductPrice] = useState("299.99");
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleAddToCart = () => {
     toast({
       title: "Added to cart",
       description: "This product has been added to your cart.",
+    });
+    navigate("/checkout");
+  };
+
+  const handleSaveChanges = () => {
+    setIsEditing(false);
+    toast({
+      title: "Changes saved",
+      description: "Product details have been updated.",
     });
   };
 
@@ -59,12 +74,45 @@ const Index = () => {
               <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4">
                 New Arrival
               </div>
-              <h1 className="text-4xl font-bold mb-4">Premium Product Name</h1>
+              <div className="flex items-center gap-2 mb-4">
+                {isEditing ? (
+                  <Input
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
+                    className="text-4xl font-bold"
+                  />
+                ) : (
+                  <h1 className="text-4xl font-bold">{productName}</h1>
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsEditing(!isEditing)}
+                >
+                  <Edit2 className="h-4 w-4" />
+                </Button>
+              </div>
               <div className="flex items-center gap-4 mb-4">
                 <ReviewStars rating={4} />
                 <span className="text-sm text-muted-foreground">(150 reviews)</span>
               </div>
-              <p className="text-3xl font-semibold mb-6">$299.99</p>
+              <div className="flex items-center gap-2 mb-6">
+                {isEditing ? (
+                  <Input
+                    type="number"
+                    value={productPrice}
+                    onChange={(e) => setProductPrice(e.target.value)}
+                    className="text-3xl font-semibold w-32"
+                  />
+                ) : (
+                  <p className="text-3xl font-semibold">${productPrice}</p>
+                )}
+              </div>
+              {isEditing && (
+                <Button onClick={handleSaveChanges} className="mb-4">
+                  Save Changes
+                </Button>
+              )}
               <p className="text-muted-foreground">
                 Experience unparalleled quality with our premium product. Crafted with
                 attention to detail and designed for those who appreciate excellence.
