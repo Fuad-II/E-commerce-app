@@ -5,35 +5,22 @@ import { ReviewStars } from "@/components/ReviewStars";
 import { RelatedProducts } from "@/components/RelatedProducts";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { ShoppingCart, Edit2 } from "lucide-react";
+import { ShoppingCart, Edit2, Plus, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
-const MOCK_IMAGES = [
+interface ProductVariant {
+  id: string;
+  name: string;
+  inStock: boolean;
+}
+
+const DEFAULT_IMAGES = [
   "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
   "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
   "https://images.unsplash.com/photo-1485827404703-89b55fcc595e",
   "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
-];
-
-const MOCK_SIZES = [
-  { id: "s", name: "S", inStock: true },
-  { id: "m", name: "M", inStock: true },
-  { id: "l", name: "L", inStock: false },
-  { id: "xl", name: "XL", inStock: true },
-];
-
-const MOCK_COLORS = [
-  { id: "black", name: "Black", inStock: true },
-  { id: "white", name: "White", inStock: true },
-  { id: "gray", name: "Gray", inStock: true },
-];
-
-const MOCK_RELATED = [
-  { id: "1", name: "Related Product 1", price: 99.99, image: MOCK_IMAGES[0] },
-  { id: "2", name: "Related Product 2", price: 149.99, image: MOCK_IMAGES[1] },
-  { id: "3", name: "Related Product 3", price: 199.99, image: MOCK_IMAGES[2] },
-  { id: "4", name: "Related Product 4", price: 299.99, image: MOCK_IMAGES[3] },
 ];
 
 const Index = () => {
@@ -42,6 +29,11 @@ const Index = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [productName, setProductName] = useState("Premium Product Name");
   const [productPrice, setProductPrice] = useState("299.99");
+  const [productDescription, setProductDescription] = useState(
+    "Experience unparalleled quality with our premium product. Crafted with attention to detail and designed for those who appreciate excellence."
+  );
+  const [sizes, setSizes] = useState(MOCK_SIZES);
+  const [colors, setColors] = useState(MOCK_COLORS);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -61,12 +53,44 @@ const Index = () => {
     });
   };
 
+  const addVariant = (type: 'size' | 'color') => {
+    const newVariant: ProductVariant = {
+      id: `new-${type}-${Date.now()}`,
+      name: `New ${type}`,
+      inStock: true
+    };
+    
+    if (type === 'size') {
+      setSizes([...sizes, newVariant]);
+    } else {
+      setColors([...colors, newVariant]);
+    }
+    
+    toast({
+      title: "Variant added",
+      description: `New ${type} variant has been added.`,
+    });
+  };
+
+  const removeVariant = (type: 'size' | 'color', id: string) => {
+    if (type === 'size') {
+      setSizes(sizes.filter(size => size.id !== id));
+    } else {
+      setColors(colors.filter(color => color.id !== id));
+    }
+    
+    toast({
+      title: "Variant removed",
+      description: `${type} variant has been removed.`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <main className="container py-12">
         <div className="grid lg:grid-cols-2 gap-12 mb-16">
           <div className="fade-in">
-            <ImageGallery images={MOCK_IMAGES} />
+            <ImageGallery images={DEFAULT_IMAGES} />
           </div>
           
           <div className="space-y-8 fade-in" style={{ animationDelay: "200ms" }}>
@@ -109,35 +133,102 @@ const Index = () => {
                 )}
               </div>
               {isEditing && (
-                <Button onClick={handleSaveChanges} className="mb-4">
-                  Save Changes
-                </Button>
+                <div className="space-y-4 mb-6">
+                  <Textarea
+                    value={productDescription}
+                    onChange={(e) => setProductDescription(e.target.value)}
+                    placeholder="Product description"
+                    className="min-h-[100px]"
+                  />
+                  <Button onClick={handleSaveChanges}>
+                    Save Changes
+                  </Button>
+                </div>
               )}
-              <p className="text-muted-foreground">
-                Experience unparalleled quality with our premium product. Crafted with
-                attention to detail and designed for those who appreciate excellence.
-              </p>
+              {!isEditing && (
+                <p className="text-muted-foreground mb-6">
+                  {productDescription}
+                </p>
+              )}
             </div>
 
             <div className="space-y-6">
               <div>
-                <label className="text-sm font-medium mb-2 block">Size</label>
-                <VariantSelector
-                  variants={MOCK_SIZES}
-                  selectedVariant={selectedSize}
-                  onChange={setSelectedSize}
-                  type="size"
-                />
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-sm font-medium">Size</label>
+                  {isEditing && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => addVariant('size')}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Size
+                    </Button>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <VariantSelector
+                    variants={sizes}
+                    selectedVariant={selectedSize}
+                    onChange={setSelectedSize}
+                    type="size"
+                  />
+                  {isEditing && (
+                    <div className="flex flex-wrap gap-2">
+                      {sizes.map((size) => (
+                        <Button
+                          key={size.id}
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeVariant('size', size.id)}
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          {size.name}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div>
-                <label className="text-sm font-medium mb-2 block">Color</label>
-                <VariantSelector
-                  variants={MOCK_COLORS}
-                  selectedVariant={selectedColor}
-                  onChange={setSelectedColor}
-                  type="color"
-                />
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-sm font-medium">Color</label>
+                  {isEditing && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => addVariant('color')}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Color
+                    </Button>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <VariantSelector
+                    variants={colors}
+                    selectedVariant={selectedColor}
+                    onChange={setSelectedColor}
+                    type="color"
+                  />
+                  {isEditing && (
+                    <div className="flex flex-wrap gap-2">
+                      {colors.map((color) => (
+                        <Button
+                          key={color.id}
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeVariant('color', color.id)}
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          {color.name}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <Button
@@ -160,5 +251,25 @@ const Index = () => {
     </div>
   );
 };
+
+const MOCK_SIZES = [
+  { id: "s", name: "S", inStock: true },
+  { id: "m", name: "M", inStock: true },
+  { id: "l", name: "L", inStock: false },
+  { id: "xl", name: "XL", inStock: true },
+];
+
+const MOCK_COLORS = [
+  { id: "black", name: "Black", inStock: true },
+  { id: "white", name: "White", inStock: true },
+  { id: "gray", name: "Gray", inStock: true },
+];
+
+const MOCK_RELATED = [
+  { id: "1", name: "Related Product 1", price: 99.99, image: DEFAULT_IMAGES[0] },
+  { id: "2", name: "Related Product 2", price: 149.99, image: DEFAULT_IMAGES[1] },
+  { id: "3", name: "Related Product 3", price: 199.99, image: DEFAULT_IMAGES[2] },
+  { id: "4", name: "Related Product 4", price: 299.99, image: DEFAULT_IMAGES[3] },
+];
 
 export default Index;
