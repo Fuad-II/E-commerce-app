@@ -1,21 +1,29 @@
 import { Button } from "@/components/ui/button"
-import { Plus, Trash2 } from "lucide-react"
+import { Plus, Trash2, Upload } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { Input } from "@/components/ui/input"
 
 interface Product {
   id: string
   name: string
   price: number
   image: string
+  images?: string[]
 }
 
 interface ProductManagerProps {
   products: Product[]
   onAddProduct: () => void
   onRemoveProduct: (id: string) => void
+  onUpdateProductImages?: (id: string, images: string[]) => void
 }
 
-export const ProductManager = ({ products, onAddProduct, onRemoveProduct }: ProductManagerProps) => {
+export const ProductManager = ({ 
+  products, 
+  onAddProduct, 
+  onRemoveProduct,
+  onUpdateProductImages 
+}: ProductManagerProps) => {
   const { toast } = useToast()
 
   const handleRemoveProduct = (id: string) => {
@@ -23,6 +31,33 @@ export const ProductManager = ({ products, onAddProduct, onRemoveProduct }: Prod
     toast({
       title: "Product removed",
       description: "The product has been removed from the catalog.",
+    })
+  }
+
+  const handleImageUpload = async (productId: string, event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files || !onUpdateProductImages) return
+
+    const imageUrls: string[] = []
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      const reader = new FileReader()
+      
+      await new Promise<void>((resolve) => {
+        reader.onload = (e) => {
+          if (e.target?.result) {
+            imageUrls.push(e.target.result.toString())
+          }
+          resolve()
+        }
+        reader.readAsDataURL(file)
+      })
+    }
+
+    onUpdateProductImages(productId, imageUrls)
+    toast({
+      title: "Images updated",
+      description: "Product images have been updated successfully.",
     })
   }
 
@@ -47,11 +82,30 @@ export const ProductManager = ({ products, onAddProduct, onRemoveProduct }: Prod
               <Trash2 className="h-4 w-4" />
             </Button>
             <div className="border rounded-lg p-4">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-48 object-cover rounded-md mb-4"
-              />
+              <div className="relative">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-48 object-cover rounded-md mb-4"
+                />
+                <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    id={`image-upload-${product.id}`}
+                    onChange={(e) => handleImageUpload(product.id, e)}
+                  />
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    onClick={() => document.getElementById(`image-upload-${product.id}`)?.click()}
+                  >
+                    <Upload className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
               <h3 className="font-medium">{product.name}</h3>
               <p className="text-muted-foreground">${product.price}</p>
             </div>

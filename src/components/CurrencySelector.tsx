@@ -5,6 +5,7 @@ const CURRENCIES = [
   { code: 'EUR', symbol: '€' },
   { code: 'GBP', symbol: '£' },
   { code: 'JPY', symbol: '¥' },
+  { code: 'EGP', symbol: 'E£' },
 ] as const
 
 export type CurrencyType = typeof CURRENCIES[number]['code']

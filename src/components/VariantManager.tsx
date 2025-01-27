@@ -9,6 +9,7 @@ interface Variant {
   id: string
   name: string
   inStock: boolean
+  colorName?: string
 }
 
 interface VariantManagerProps {
@@ -27,6 +28,7 @@ export const VariantManager = ({
   onVariantsUpdate,
 }: VariantManagerProps) => {
   const [newVariantName, setNewVariantName] = useState("")
+  const [newColorName, setNewColorName] = useState("")
   const { toast } = useToast()
 
   const handleAddVariant = () => {
@@ -36,10 +38,12 @@ export const VariantManager = ({
       id: `${type}-${Date.now()}`,
       name: newVariantName,
       inStock: true,
+      ...(type === 'color' && { colorName: newColorName || newVariantName }),
     }
 
     onVariantsUpdate([...variants, newVariant])
     setNewVariantName("")
+    setNewColorName("")
     toast({
       title: "Variant added",
       description: `New ${type} variant has been added.`,
@@ -66,6 +70,14 @@ export const VariantManager = ({
             placeholder={`Add new ${type}`}
             className="w-32"
           />
+          {type === 'color' && (
+            <Input
+              value={newColorName}
+              onChange={(e) => setNewColorName(e.target.value)}
+              placeholder="Color name"
+              className="w-32"
+            />
+          )}
           <Button size="icon" onClick={handleAddVariant}>
             <Plus className="h-4 w-4" />
           </Button>
@@ -83,12 +95,17 @@ export const VariantManager = ({
             >
               <X className="h-3 w-3" />
             </Button>
-            <VariantSelector
-              variants={[variant]}
-              selectedVariant={selectedVariant}
-              onChange={onVariantChange}
-              type={type}
-            />
+            <div className="flex flex-col items-center gap-1">
+              <VariantSelector
+                variants={[variant]}
+                selectedVariant={selectedVariant}
+                onChange={onVariantChange}
+                type={type}
+              />
+              {type === 'color' && variant.colorName && (
+                <span className="text-xs text-muted-foreground">{variant.colorName}</span>
+              )}
+            </div>
           </div>
         ))}
       </div>
