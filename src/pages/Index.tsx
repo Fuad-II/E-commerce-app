@@ -8,6 +8,7 @@ import { ProductManager } from "@/components/ProductManager"
 import { ProductEditor } from "@/components/ProductEditor"
 import { VariantManager } from "@/components/VariantManager"
 import { ReviewStars } from "@/components/ReviewStars"
+import { Header } from "@/components/Header"
 
 const DEFAULT_IMAGES = [
   "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
@@ -63,7 +64,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container py-12">
+      <Header />
+      <main className="container py-12 mt-16">
         <div className="grid lg:grid-cols-2 gap-12 mb-16">
           <div className="fade-in">
             <ImageGallery images={DEFAULT_IMAGES} />
