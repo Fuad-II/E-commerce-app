@@ -4,6 +4,7 @@ interface Variant {
   id: string;
   name: string;
   inStock: boolean;
+  colorHex?: string;
 }
 
 interface VariantSelectorProps {
@@ -21,12 +22,13 @@ export function VariantSelector({ variants, selectedVariant, onChange, type }: V
           key={variant.id}
           onClick={() => onChange(variant.id)}
           disabled={!variant.inStock}
+          style={type === 'color' && variant.colorHex ? { backgroundColor: variant.colorHex } : undefined}
           className={cn(
             "variant-selector",
             type === 'color' ? 'w-9 h-9 rounded-full' : 'min-w-[3rem]',
             selectedVariant === variant.id
-              ? "bg-primary text-primary-foreground"
-              : "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+              ? "ring-2 ring-primary ring-offset-2"
+              : "hover:opacity-80",
             !variant.inStock && "opacity-50 cursor-not-allowed"
           )}
         >

@@ -10,6 +10,7 @@ interface Variant {
   name: string
   inStock: boolean
   colorName?: string
+  colorHex?: string
 }
 
 interface VariantManagerProps {
@@ -29,6 +30,7 @@ export const VariantManager = ({
 }: VariantManagerProps) => {
   const [newVariantName, setNewVariantName] = useState("")
   const [newColorName, setNewColorName] = useState("")
+  const [newColorHex, setNewColorHex] = useState("#000000")
   const { toast } = useToast()
 
   const handleAddVariant = () => {
@@ -38,12 +40,16 @@ export const VariantManager = ({
       id: `${type}-${Date.now()}`,
       name: newVariantName,
       inStock: true,
-      ...(type === 'color' && { colorName: newColorName || newVariantName }),
+      ...(type === 'color' && { 
+        colorName: newColorName || newVariantName,
+        colorHex: newColorHex
+      }),
     }
 
     onVariantsUpdate([...variants, newVariant])
     setNewVariantName("")
     setNewColorName("")
+    setNewColorHex("#000000")
     toast({
       title: "Variant added",
       description: `New ${type} variant has been added.`,
@@ -71,12 +77,20 @@ export const VariantManager = ({
             className="w-32"
           />
           {type === 'color' && (
-            <Input
-              value={newColorName}
-              onChange={(e) => setNewColorName(e.target.value)}
-              placeholder="Color name"
-              className="w-32"
-            />
+            <>
+              <Input
+                value={newColorName}
+                onChange={(e) => setNewColorName(e.target.value)}
+                placeholder="Color name"
+                className="w-32"
+              />
+              <Input
+                type="color"
+                value={newColorHex}
+                onChange={(e) => setNewColorHex(e.target.value)}
+                className="w-16 p-1 h-10"
+              />
+            </>
           )}
           <Button size="icon" onClick={handleAddVariant}>
             <Plus className="h-4 w-4" />
