@@ -1,10 +1,6 @@
 import { useState } from "react"
 import { ImageGallery } from "@/components/ImageGallery"
-import { Button } from "@/components/ui/button"
-import { ShoppingCart } from "lucide-react"
-import { useNavigate } from "react-router-dom"
 import { CurrencySelector, type CurrencyType } from "@/components/CurrencySelector"
-import { ProductManager } from "@/components/ProductManager"
 import { ProductEditor } from "@/components/ProductEditor"
 import { VariantManager } from "@/components/VariantManager"
 import { ReviewStars } from "@/components/ReviewStars"
@@ -41,11 +37,6 @@ const Index = () => {
   const [sizes, setSizes] = useState(INITIAL_SIZES)
   const [colors, setColors] = useState(INITIAL_COLORS)
   const [currency, setCurrency] = useState<CurrencyType>("USD")
-  const navigate = useNavigate()
-
-  const handleAddToCart = () => {
-    navigate("/checkout")
-  }
 
   const handleUpdateProduct = (name: string, price: string, description: string) => {
     setProductName(name)
@@ -108,20 +99,9 @@ const Index = () => {
                 onVariantChange={setSelectedColor}
                 onVariantsUpdate={setColors}
               />
-
-              <Button size="lg" className="w-full" onClick={handleAddToCart}>
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                Add to Cart
-              </Button>
             </div>
           </div>
         </div>
-
-        <ProductManager
-          products={[]}
-          onAddProduct={() => {}}
-          onRemoveProduct={() => {}}
-        />
       </main>
     </div>
   )
