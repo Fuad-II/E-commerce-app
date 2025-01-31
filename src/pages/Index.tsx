@@ -1,13 +1,14 @@
 import { useState } from "react"
 import { ImageGallery } from "@/components/ImageGallery"
 import { Button } from "@/components/ui/button"
-import { ShoppingCart } from "lucide-react"
+import { ShoppingCart, ArrowLeft } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { CurrencySelector, type CurrencyType } from "@/components/CurrencySelector"
 import { ProductEditor } from "@/components/ProductEditor"
 import { VariantManager } from "@/components/VariantManager"
 import { ReviewStars } from "@/components/ReviewStars"
 import { Header } from "@/components/Header"
+import { useToast } from "@/hooks/use-toast"
 
 const DEFAULT_IMAGES = [
   "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
@@ -41,8 +42,15 @@ const Index = () => {
   const [colors, setColors] = useState(INITIAL_COLORS)
   const [currency, setCurrency] = useState<CurrencyType>("USD")
   const navigate = useNavigate()
+  const { toast } = useToast()
+  const [estimatedDelivery] = useState("3-5 business days")
 
   const handleAddToCart = () => {
+    toast({
+      title: "Added to Cart",
+      description: "Your item has been added to the cart successfully!",
+      duration: 3000,
+    })
     navigate("/checkout")
   }
 
@@ -71,11 +79,10 @@ const Index = () => {
           </div>
           
           <div className="space-y-8 fade-in" style={{ animationDelay: "200ms" }}>
-            <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
-              New Arrival
-            </div>
-
-            <div className="flex items-center justify-end">
+            <div className="flex justify-between items-center">
+              <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
+                New Arrival
+              </div>
               <CurrencySelector value={currency} onValueChange={setCurrency} />
             </div>
 
@@ -86,9 +93,15 @@ const Index = () => {
               onUpdateProduct={handleUpdateProduct}
             />
 
-            <div className="flex items-center gap-4">
-              <ReviewStars rating={4} />
-              <span className="text-sm text-muted-foreground">(150 reviews)</span>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <ReviewStars rating={4} />
+                <span className="text-sm text-muted-foreground">(150 reviews)</span>
+              </div>
+              
+              <div className="text-sm text-muted-foreground">
+                Estimated Delivery: {estimatedDelivery}
+              </div>
             </div>
 
             <div className="space-y-6">
@@ -108,10 +121,26 @@ const Index = () => {
                 onVariantsUpdate={setColors}
               />
 
-              <Button size="lg" className="w-full" onClick={handleAddToCart}>
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                Add to Cart
-              </Button>
+              <div className="flex gap-4">
+                <Button 
+                  size="lg" 
+                  className="w-full animate-fade-in hover:scale-105 transition-transform" 
+                  onClick={handleAddToCart}
+                >
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  Add to Cart
+                </Button>
+              </div>
+            </div>
+
+            <div className="border-t pt-6">
+              <h3 className="font-medium mb-2">Product Features:</h3>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                <li>Premium quality materials</li>
+                <li>Handcrafted with care</li>
+                <li>Lifetime warranty</li>
+                <li>Free returns within 30 days</li>
+              </ul>
             </div>
           </div>
         </div>
