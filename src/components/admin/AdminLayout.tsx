@@ -1,19 +1,24 @@
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { Settings, Database, Users, Plus, Image, Text, Package, BarChart3, Tags } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Sidebar, SidebarContent, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { Settings, Database, Users, Plus, BarChart3, Tags } from "lucide-react"
+import { SidebarNavGroup } from "./sidebar/SidebarNavGroup"
 
 interface AdminLayoutProps {
   children: React.ReactNode
 }
 
-const menuItems = [
+const navigationGroups = [
   {
-    title: "Dashboard",
-    icon: BarChart3,
-    url: "/admin"
+    label: "Overview",
+    items: [
+      {
+        title: "Dashboard",
+        icon: BarChart3,
+        url: "/admin"
+      }
+    ]
   },
   {
-    group: "Products",
+    label: "Products",
     items: [
       {
         title: "All Products",
@@ -33,7 +38,7 @@ const menuItems = [
     ]
   },
   {
-    group: "Users",
+    label: "Users",
     items: [
       {
         title: "All Users",
@@ -43,7 +48,7 @@ const menuItems = [
     ]
   },
   {
-    group: "Settings",
+    label: "Settings",
     items: [
       {
         title: "General",
@@ -57,49 +62,21 @@ const menuItems = [
 export const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <Sidebar>
-          <SidebarContent>
-            <SidebarGroup>
-              <SidebarGroupLabel>Admin Panel</SidebarGroupLabel>
-              <SidebarGroupContent>
-                {menuItems.map((item, index) => (
-                  item.group ? (
-                    <div key={index} className="space-y-2">
-                      <SidebarGroupLabel>{item.group}</SidebarGroupLabel>
-                      <SidebarMenu>
-                        {item.items?.map((subItem) => (
-                          <SidebarMenuItem key={subItem.title}>
-                            <SidebarMenuButton asChild>
-                              <Link to={subItem.url} className="flex items-center gap-2">
-                                <subItem.icon className="h-4 w-4" />
-                                <span>{subItem.title}</span>
-                              </Link>
-                            </SidebarMenuButton>
-                          </SidebarMenuItem>
-                        ))}
-                      </SidebarMenu>
-                    </div>
-                  ) : (
-                    <SidebarMenu key={index}>
-                      <SidebarMenuItem>
-                        <SidebarMenuButton asChild>
-                          <Link to={item.url} className="flex items-center gap-2">
-                            <item.icon className="h-4 w-4" />
-                            <span>{item.title}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    </SidebarMenu>
-                  )
-                ))}
-              </SidebarGroupContent>
-            </SidebarGroup>
+      <div className="min-h-screen flex w-full bg-gray-50">
+        <Sidebar className="border-r border-gray-200">
+          <SidebarContent className="bg-white">
+            {navigationGroups.map((group) => (
+              <SidebarNavGroup
+                key={group.label}
+                label={group.label}
+                items={group.items}
+              />
+            ))}
           </SidebarContent>
         </Sidebar>
         <main className="flex-1">
           <div className="container py-6">
-            <SidebarTrigger />
+            <SidebarTrigger className="mb-4" />
             {children}
           </div>
         </main>

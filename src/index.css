@@ -47,6 +47,23 @@
   .glass-card {
     @apply bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-lg shadow-lg;
   }
+
+  /* Improved sidebar styles */
+  [data-sidebar="sidebar"] {
+    @apply bg-white shadow-sm;
+  }
+
+  [data-sidebar="menu-button"] {
+    @apply text-gray-700 hover:bg-gray-100 hover:text-gray-900;
+  }
+
+  [data-sidebar="group-label"] {
+    @apply text-gray-500 font-medium;
+  }
+
+  [data-sidebar="trigger"] {
+    @apply text-gray-700 hover:bg-gray-100 hover:text-gray-900;
+  }
 }
 
 .image-gallery {
