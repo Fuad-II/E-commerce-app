@@ -37,7 +37,7 @@
   }
 
   .product-image {
-    @apply aspect-square object-cover rounded-lg transition-opacity duration-300;
+    @apply aspect-square object-cover rounded-lg transition-all duration-300 hover:scale-105;
   }
 
   .variant-selector {
@@ -45,7 +45,7 @@
   }
 
   .glass-card {
-    @apply bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-lg shadow-lg;
+    @apply bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-xl;
   }
 
   /* Improved sidebar styles */
@@ -67,7 +67,7 @@
 }
 
 .image-gallery {
-  @apply grid gap-4;
+  @apply grid gap-6;
   grid-template-columns: 80px 1fr;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .main-image-container {
-  @apply relative aspect-square rounded-lg overflow-hidden;
+  @apply relative aspect-square rounded-xl overflow-hidden shadow-lg;
 }
 
 .review-rating {

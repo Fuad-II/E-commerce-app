@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { ImageGallery } from "@/components/ImageGallery"
 import { Button } from "@/components/ui/button"
-import { ShoppingCart, ArrowLeft } from "lucide-react"
+import { ShoppingCart } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { CurrencySelector, type CurrencyType } from "@/components/CurrencySelector"
 import { ProductEditor } from "@/components/ProductEditor"
@@ -30,7 +30,7 @@ const INITIAL_COLORS = [
   { id: "gray", name: "Gray", inStock: true },
 ]
 
-const Index = () => {
+const ProductShowcase = () => {
   const [selectedSize, setSelectedSize] = useState(INITIAL_SIZES[0].id)
   const [selectedColor, setSelectedColor] = useState(INITIAL_COLORS[0].id)
   const [productName, setProductName] = useState("Premium Product Name")
@@ -70,77 +70,89 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header />
       <main className="container py-12 mt-16">
-        <div className="grid lg:grid-cols-2 gap-12 mb-16">
-          <div className="fade-in">
-            <ImageGallery images={DEFAULT_IMAGES} />
-          </div>
-          
-          <div className="space-y-8 fade-in" style={{ animationDelay: "200ms" }}>
-            <div className="flex justify-between items-center">
-              <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium">
-                New Arrival
-              </div>
-              <CurrencySelector value={currency} onValueChange={setCurrency} />
+        <div className="glass-card p-8 lg:p-12">
+          <div className="grid lg:grid-cols-2 gap-12 mb-16">
+            <div className="fade-in">
+              <ImageGallery images={DEFAULT_IMAGES} />
             </div>
-
-            <ProductEditor
-              productName={productName}
-              productPrice={formatPrice(productPrice)}
-              productDescription={productDescription}
-              onUpdateProduct={handleUpdateProduct}
-            />
-
-            <div className="space-y-4">
-              <div className="flex items-center gap-4">
-                <ReviewStars rating={4} />
-                <span className="text-sm text-muted-foreground">(150 reviews)</span>
+            
+            <div className="space-y-8 fade-in" style={{ animationDelay: "200ms" }}>
+              <div className="flex justify-between items-center">
+                <div className="inline-block bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium">
+                  New Arrival
+                </div>
+                <CurrencySelector value={currency} onValueChange={setCurrency} />
               </div>
-              
-              <div className="text-sm text-muted-foreground">
-                Estimated Delivery: {estimatedDelivery}
+
+              <div className="space-y-4">
+                <h1 className="text-4xl font-bold tracking-tight text-gray-900">{productName}</h1>
+                <div className="text-3xl font-bold text-primary">{formatPrice(productPrice)}</div>
+                <p className="text-lg text-gray-600">{productDescription}</p>
               </div>
-            </div>
 
-            <div className="space-y-6">
-              <VariantManager
-                type="size"
-                variants={sizes}
-                selectedVariant={selectedSize}
-                onVariantChange={setSelectedSize}
-                onVariantsUpdate={setSizes}
-              />
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <ReviewStars rating={4} />
+                  <span className="text-sm text-muted-foreground">(150 reviews)</span>
+                </div>
+                
+                <div className="text-sm text-muted-foreground flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                  Estimated Delivery: {estimatedDelivery}
+                </div>
+              </div>
 
-              <VariantManager
-                type="color"
-                variants={colors}
-                selectedVariant={selectedColor}
-                onVariantChange={setSelectedColor}
-                onVariantsUpdate={setColors}
-              />
+              <div className="space-y-6">
+                <VariantManager
+                  type="size"
+                  variants={sizes}
+                  selectedVariant={selectedSize}
+                  onVariantChange={setSelectedSize}
+                  onVariantsUpdate={setSizes}
+                />
 
-              <div className="flex gap-4">
+                <VariantManager
+                  type="color"
+                  variants={colors}
+                  selectedVariant={selectedColor}
+                  onVariantChange={setSelectedColor}
+                  onVariantsUpdate={setColors}
+                />
+
                 <Button 
                   size="lg" 
-                  className="w-full animate-fade-in hover:scale-105 transition-transform" 
+                  className="w-full animate-fade-in hover:scale-105 transition-transform bg-primary hover:bg-primary/90" 
                   onClick={handleAddToCart}
                 >
-                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  <ShoppingCart className="mr-2 h-5 w-5" />
                   Add to Cart
                 </Button>
               </div>
-            </div>
 
-            <div className="border-t pt-6">
-              <h3 className="font-medium mb-2">Product Features:</h3>
-              <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                <li>Premium quality materials</li>
-                <li>Handcrafted with care</li>
-                <li>Lifetime warranty</li>
-                <li>Free returns within 30 days</li>
-              </ul>
+              <div className="border-t pt-6">
+                <h3 className="font-medium mb-4 text-lg">Product Features:</h3>
+                <ul className="grid gap-3 text-gray-600">
+                  <li className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                    Premium quality materials
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                    Handcrafted with care
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                    Lifetime warranty
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                    Free returns within 30 days
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -149,4 +161,4 @@ const Index = () => {
   )
 }
 
-export default Index
+export default ProductShowcase
