@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button"
 import { ShoppingCart } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { CurrencySelector, type CurrencyType } from "@/components/CurrencySelector"
-import { ProductEditor } from "@/components/ProductEditor"
-import { VariantManager } from "@/components/VariantManager"
 import { ReviewStars } from "@/components/ReviewStars"
 import { Header } from "@/components/Header"
 import { useToast } from "@/hooks/use-toast"
@@ -54,12 +52,6 @@ const ProductShowcase = () => {
     navigate("/checkout")
   }
 
-  const handleUpdateProduct = (name: string, price: string, description: string) => {
-    setProductName(name)
-    setProductPrice(price)
-    setProductDescription(description)
-  }
-
   const formatPrice = (price: string) => {
     const numPrice = parseFloat(price)
     const formatter = new Intl.NumberFormat("en-US", {
@@ -72,15 +64,15 @@ const ProductShowcase = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header />
-      <main className="container py-12 mt-16">
-        <div className="glass-card p-8 lg:p-12">
-          <div className="grid lg:grid-cols-2 gap-12 mb-16">
-            <div className="fade-in">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 mt-16">
+        <div className="glass-card p-4 sm:p-6 lg:p-8">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+            <div className="fade-in w-full max-w-2xl mx-auto">
               <ImageGallery images={DEFAULT_IMAGES} />
             </div>
             
-            <div className="space-y-8 fade-in" style={{ animationDelay: "200ms" }}>
-              <div className="flex justify-between items-center">
+            <div className="space-y-6 lg:space-y-8 fade-in" style={{ animationDelay: "200ms" }}>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div className="inline-block bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium">
                   New Arrival
                 </div>
@@ -88,9 +80,9 @@ const ProductShowcase = () => {
               </div>
 
               <div className="space-y-4">
-                <h1 className="text-4xl font-bold tracking-tight text-gray-900">{productName}</h1>
-                <div className="text-3xl font-bold text-primary">{formatPrice(productPrice)}</div>
-                <p className="text-lg text-gray-600">{productDescription}</p>
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">{productName}</h1>
+                <div className="text-2xl sm:text-3xl font-bold text-primary">{formatPrice(productPrice)}</div>
+                <p className="text-base sm:text-lg text-gray-600">{productDescription}</p>
               </div>
 
               <div className="space-y-4">
@@ -106,21 +98,33 @@ const ProductShowcase = () => {
               </div>
 
               <div className="space-y-6">
-                <VariantManager
-                  type="size"
-                  variants={sizes}
-                  selectedVariant={selectedSize}
-                  onVariantChange={setSelectedSize}
-                  onVariantsUpdate={setSizes}
-                />
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {sizes.map((size) => (
+                    <Button
+                      key={size.id}
+                      variant={selectedSize === size.id ? "default" : "outline"}
+                      className="w-full"
+                      disabled={!size.inStock}
+                      onClick={() => setSelectedSize(size.id)}
+                    >
+                      {size.name}
+                    </Button>
+                  ))}
+                </div>
 
-                <VariantManager
-                  type="color"
-                  variants={colors}
-                  selectedVariant={selectedColor}
-                  onVariantChange={setSelectedColor}
-                  onVariantsUpdate={setColors}
-                />
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  {colors.map((color) => (
+                    <Button
+                      key={color.id}
+                      variant={selectedColor === color.id ? "default" : "outline"}
+                      className="w-full"
+                      disabled={!color.inStock}
+                      onClick={() => setSelectedColor(color.id)}
+                    >
+                      {color.name}
+                    </Button>
+                  ))}
+                </div>
 
                 <Button 
                   size="lg" 
