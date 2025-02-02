@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button"
-import { Plus, Trash2, Upload } from "lucide-react"
+import { Plus } from "lucide-react"
 import { toast } from "sonner"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ProductCard } from "./products/ProductCard"
 
 interface Product {
   id: string
@@ -60,46 +59,12 @@ export const ProductManager = ({
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
-          <Card key={product.id} className="relative group">
-            <Button
-              variant="destructive"
-              size="icon"
-              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-              onClick={() => onRemoveProduct(product.id)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-            <CardHeader>
-              <CardTitle>{product.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="relative">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full aspect-square object-cover rounded-md mb-4"
-                />
-                <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    className="hidden"
-                    id={`image-upload-${product.id}`}
-                    onChange={(e) => handleImageUpload(product.id, e)}
-                  />
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    onClick={() => document.getElementById(`image-upload-${product.id}`)?.click()}
-                  >
-                    <Upload className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-              <p className="text-2xl font-semibold">${product.price}</p>
-            </CardContent>
-          </Card>
+          <ProductCard
+            key={product.id}
+            {...product}
+            onRemove={onRemoveProduct}
+            onImageUpload={handleImageUpload}
+          />
         ))}
       </div>
     </div>
