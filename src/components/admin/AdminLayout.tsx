@@ -1,6 +1,7 @@
 import { Sidebar, SidebarContent, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Settings, Database, Users, Plus, BarChart3, Tags } from "lucide-react"
 import { SidebarNavGroup } from "./sidebar/SidebarNavGroup"
+import { useLocation } from "react-router-dom"
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -60,8 +61,10 @@ const navigationGroups = [
 ]
 
 export const AdminLayout = ({ children }: AdminLayoutProps) => {
+  const location = useLocation()
+
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex w-full bg-gray-50">
         <Sidebar className="border-r border-gray-200">
           <SidebarContent className="bg-white">
@@ -70,6 +73,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                 key={group.label}
                 label={group.label}
                 items={group.items}
+                currentPath={location.pathname}
               />
             ))}
           </SidebarContent>
