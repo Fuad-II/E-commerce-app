@@ -9,65 +9,52 @@ interface Product {
   name: string
   price: number
   image: string
+  images?: string[]
+  description?: string
 }
 
-const INITIAL_PRODUCTS: Product[] = [
-  {
-    id: "1",
-    name: "Product 1",
-    price: 99.99,
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
-  },
-  {
-    id: "2",
-    name: "Product 2",
-    price: 149.99,
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
-  },
-]
-
 export const ProductManager = () => {
-  const [products, setProducts] = useState(INITIAL_PRODUCTS)
+  const [products, setProducts] = useState<Product[]>([])
 
-  const onRemoveProduct = (id: string) => {
-    setProducts((prev) => prev.filter((product) => product.id !== id))
+  const handleAddProduct = () => {
+    const newProduct = {
+      id: `product-${Date.now()}`,
+      name: "New Product",
+      price: 0,
+      image: "/placeholder.svg",
+      description: "Product description"
+    }
+    setProducts([...products, newProduct])
+    toast.success("Product added successfully")
+  }
+
+  const handleRemoveProduct = (id: string) => {
+    setProducts(products.filter(p => p.id !== id))
     toast.success("Product removed successfully")
   }
 
-  const handleImageUpload = (id: string, event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setProducts((prev) =>
-          prev.map((product) =>
-            product.id === id
-              ? { ...product, image: reader.result as string }
-              : product
-          )
-        )
-        toast.success("Image updated successfully")
-      }
-      reader.readAsDataURL(file)
-    }
+  const handleUpdateProductImages = (id: string, images: string[]) => {
+    setProducts(products.map(p => 
+      p.id === id ? { ...p, images, image: images[0] || p.image } : p
+    ))
   }
 
   return (
-    <div className="space-y-8 p-4 sm:p-6 lg:p-8">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl sm:text-3xl font-bold">Products</h2>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-semibold tracking-tight">Products</h2>
+        <Button onClick={handleAddProduct}>
+          <Plus className="mr-2 h-4 w-4" />
           Add Product
         </Button>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {products.map((product) => (
           <ProductCard
             key={product.id}
-            {...product}
-            onRemove={onRemoveProduct}
-            onImageUpload={handleImageUpload}
+            product={product}
+            onRemove={() => handleRemoveProduct(product.id)}
+            onUpdateImages={(images) => handleUpdateProductImages(product.id, images)}
           />
         ))}
       </div>
