@@ -4,8 +4,6 @@
 
 **URL**: 
 
-## How can I edit this code?
-
 **Use your preferred IDE**
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
@@ -42,8 +40,6 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
-## What technologies are used for this project?
-
 This project is built with .
 
 - Vite
@@ -52,9 +48,4 @@ This project is built with .
 - shadcn-ui
 - Tailwind CSS
 
-## How can I deploy this project?
-
-
-
-## I want to use a custom domain - is that possible?
-
+## deploy the app
